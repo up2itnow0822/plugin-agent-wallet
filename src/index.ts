@@ -19,6 +19,7 @@ import type {
   Memory,
   State,
   HandlerCallback,
+  ProviderResult,
 } from "@elizaos/core";
 
 // ---- Actions ----
@@ -37,11 +38,11 @@ const createWalletAction: Action = {
   examples: [
     [
       {
-        user: "{{user1}}",
+        name: "{{user1}}",
         content: { text: "Create a wallet on Base" },
       },
       {
-        user: "{{agentName}}",
+        name: "{{agentName}}",
         content: {
           text: "I have created a new non-custodial wallet on Base. Your agent address is 0x...",
           action: "CREATE_WALLET",
@@ -51,12 +52,12 @@ const createWalletAction: Action = {
   ],
   validate: async (_runtime: IAgentRuntime, _message: Memory) => true,
   handler: async (
-    runtime: IAgentRuntime,
+    _runtime: IAgentRuntime,
     message: Memory,
-    state: State | undefined,
-    _options: Record<string, unknown>,
+    _state?: State,
+    _options?: Record<string, unknown>,
     callback?: HandlerCallback
-  ): Promise<boolean> => {
+  ): Promise<void> => {
     try {
       const chain =
         (message.content as Record<string, string>).chain || "base";
@@ -64,18 +65,16 @@ const createWalletAction: Action = {
       const address = `0x${Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join("")}`;
 
       if (callback) {
-        callback({
+        await callback({
           text: `Created new non-custodial wallet on ${chain}.\nAddress: ${address}\nThe private key is stored securely in the agent runtime. No custodian has access to your funds.`,
         });
       }
-      return true;
     } catch (error) {
       if (callback) {
-        callback({
+        await callback({
           text: `Failed to create wallet: ${(error as Error).message}`,
         });
       }
-      return false;
     }
   },
 };
@@ -93,11 +92,11 @@ const checkBalanceAction: Action = {
   examples: [
     [
       {
-        user: "{{user1}}",
+        name: "{{user1}}",
         content: { text: "What is my balance on Base?" },
       },
       {
-        user: "{{agentName}}",
+        name: "{{agentName}}",
         content: {
           text: "Your Base wallet balance is 0.5 ETH ($1,250.00)",
           action: "CHECK_BALANCE",
@@ -109,25 +108,23 @@ const checkBalanceAction: Action = {
   handler: async (
     _runtime: IAgentRuntime,
     _message: Memory,
-    _state: State | undefined,
-    _options: Record<string, unknown>,
+    _state?: State,
+    _options?: Record<string, unknown>,
     callback?: HandlerCallback
-  ): Promise<boolean> => {
+  ): Promise<void> => {
     try {
       // In production: const balance = await wallet.getBalance();
       if (callback) {
-        callback({
+        await callback({
           text: "Wallet balance retrieved. Use agent-wallet-sdk for live chain queries.",
         });
       }
-      return true;
     } catch (error) {
       if (callback) {
-        callback({
+        await callback({
           text: `Failed to check balance: ${(error as Error).message}`,
         });
       }
-      return false;
     }
   },
 };
@@ -146,11 +143,11 @@ const sendPaymentAction: Action = {
   examples: [
     [
       {
-        user: "{{user1}}",
+        name: "{{user1}}",
         content: { text: "Pay 10 USDC to 0xabc...def for the data service" },
       },
       {
-        user: "{{agentName}}",
+        name: "{{agentName}}",
         content: {
           text: "Payment of 10 USDC sent via x402 protocol. Transaction hash: 0x...",
           action: "SEND_PAYMENT",
@@ -162,25 +159,23 @@ const sendPaymentAction: Action = {
   handler: async (
     _runtime: IAgentRuntime,
     _message: Memory,
-    _state: State | undefined,
-    _options: Record<string, unknown>,
+    _state?: State,
+    _options?: Record<string, unknown>,
     callback?: HandlerCallback
-  ): Promise<boolean> => {
+  ): Promise<void> => {
     try {
       // In production: const tx = await wallet.x402Client.pay({ ... });
       if (callback) {
-        callback({
+        await callback({
           text: "Payment initiated. Use agent-wallet-sdk X402Client for live x402 payment flows.",
         });
       }
-      return true;
     } catch (error) {
       if (callback) {
-        callback({
+        await callback({
           text: `Payment failed: ${(error as Error).message}`,
         });
       }
-      return false;
     }
   },
 };
@@ -199,11 +194,11 @@ const getIdentityAction: Action = {
   examples: [
     [
       {
-        user: "{{user1}}",
+        name: "{{user1}}",
         content: { text: "What is my agent identity?" },
       },
       {
-        user: "{{agentName}}",
+        name: "{{agentName}}",
         content: {
           text: "Your agent identity: ERC-8004 bound at 0x..., reputation score: 85/100",
           action: "GET_IDENTITY",
@@ -215,24 +210,22 @@ const getIdentityAction: Action = {
   handler: async (
     _runtime: IAgentRuntime,
     _message: Memory,
-    _state: State | undefined,
-    _options: Record<string, unknown>,
+    _state?: State,
+    _options?: Record<string, unknown>,
     callback?: HandlerCallback
-  ): Promise<boolean> => {
+  ): Promise<void> => {
     try {
       if (callback) {
-        callback({
+        await callback({
           text: "Agent identity module ready. Use agent-wallet-sdk AgentIdentity for ERC-8004 binding.",
         });
       }
-      return true;
     } catch (error) {
       if (callback) {
-        callback({
+        await callback({
           text: `Identity lookup failed: ${(error as Error).message}`,
         });
       }
-      return false;
     }
   },
 };
@@ -240,20 +233,23 @@ const getIdentityAction: Action = {
 // ---- Provider ----
 
 const walletProvider: Provider = {
+  name: "AGENT_WALLET",
+  description: "Provides agent wallet status and capabilities",
   get: async (
     _runtime: IAgentRuntime,
     _message: Memory,
-    _state?: State
-  ): Promise<string> => {
-    return [
+    _state: State
+  ): Promise<ProviderResult> => {
+    const text = [
       "Agent Wallet Status:",
-      "- SDK: agent-wallet-sdk v5.1.1",
+      "- SDK: agentwallet-sdk (non-custodial)",
       "- Chains: 17 (Base, Ethereum, Solana, Polygon, Arbitrum, Optimism, BNB, Avalanche, +9)",
       "- x402: Enabled",
       "- Identity: ERC-8004 + ERC-6551",
       "- Reputation: Active",
       "- Type: Non-custodial (agent holds own keys)",
     ].join("\n");
+    return { text };
   },
 };
 
@@ -266,10 +262,10 @@ const paymentEvaluator: Evaluator = {
   similes: ["payment check", "x402 check"],
   examples: [
     {
-      context: "User asks agent to pay for a service",
+      prompt: "User asks agent to pay for a service",
       messages: [
         {
-          user: "{{user1}}",
+          name: "{{user1}}",
           content: { text: "Pay 5 USDC to access the weather API" },
         },
       ],
@@ -279,8 +275,11 @@ const paymentEvaluator: Evaluator = {
   validate: async (_runtime: IAgentRuntime, _message: Memory) => true,
   handler: async (
     _runtime: IAgentRuntime,
-    _message: Memory
-  ): Promise<string | null> => {
+    _message: Memory,
+    _state?: State,
+    _options?: Record<string, unknown>,
+    callback?: HandlerCallback
+  ): Promise<void> => {
     const text =
       typeof _message.content === "string"
         ? _message.content
@@ -297,7 +296,9 @@ const paymentEvaluator: Evaluator = {
     const hasPaymentIntent = paymentKeywords.some((kw) =>
       text.toLowerCase().includes(kw)
     );
-    return hasPaymentIntent ? "PAYMENT_INTENT_DETECTED" : null;
+    if (hasPaymentIntent && callback) {
+      await callback({ text: "PAYMENT_INTENT_DETECTED" });
+    }
   },
 };
 
@@ -306,7 +307,7 @@ const paymentEvaluator: Evaluator = {
 const agentWalletPlugin: Plugin = {
   name: "plugin-agent-wallet",
   description:
-    "Non-custodial multi-chain wallet for AI agents with x402 payments, identity, and reputation. Powered by agent-wallet-sdk.",
+    "Non-custodial multi-chain wallet for AI agents with x402 payments, identity, and reputation. Powered by agentwallet-sdk.",
   actions: [
     createWalletAction,
     checkBalanceAction,
