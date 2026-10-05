@@ -4,6 +4,7 @@
 
 ### Fixed
 - Public npm links, homepage, and install instructions now use `agentwallet-sdk` (`agent-wallet-sdk` 404s on npm).
+- Runtime CHECK_BALANCE / SEND_PAYMENT / GET_IDENTITY guidance now names `agentwallet-sdk`.
 
 ## [1.0.0] - 2026-03-23
 
