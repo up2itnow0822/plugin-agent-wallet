@@ -1,6 +1,6 @@
 # @ai-agent-economy/plugin-agent-wallet
 
-ElizaOS plugin providing non-custodial wallet capabilities for AI agents, powered by [agent-wallet-sdk](https://www.npmjs.com/package/agent-wallet-sdk).
+ElizaOS plugin providing non-custodial wallet capabilities for AI agents, powered by [agentwallet-sdk](https://www.npmjs.com/package/agentwallet-sdk).
 
 ## Features
 
@@ -18,7 +18,7 @@ npx elizaos plugins add @ai-agent-economy/plugin-agent-wallet
 
 Or manually:
 ```bash
-npm install @ai-agent-economy/plugin-agent-wallet agent-wallet-sdk
+npm install @ai-agent-economy/plugin-agent-wallet agentwallet-sdk
 ```
 
 ## Actions
@@ -56,7 +56,7 @@ Base, Ethereum, Solana, Polygon, Arbitrum, Optimism, BNB Chain, Avalanche, Fanto
 
 ## Links
 
-- [agent-wallet-sdk on npm](https://www.npmjs.com/package/agent-wallet-sdk)
+- [agentwallet-sdk on npm](https://www.npmjs.com/package/agentwallet-sdk)
 - [GitHub](https://github.com/up2itnow0822/agent-wallet-sdk)
 - [x402 Protocol](https://x402.org)
 - [AI Agent Economy](https://ai-agent-economy.hashnode.dev)

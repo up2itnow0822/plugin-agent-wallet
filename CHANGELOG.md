@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- Public npm links, homepage, and install instructions now use `agentwallet-sdk` (`agent-wallet-sdk` 404s on npm).
+
 ## [1.0.0] - 2026-03-23
 
 ### Added
