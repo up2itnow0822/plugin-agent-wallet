@@ -2,7 +2,7 @@
  * @ai-agent-economy/plugin-agent-wallet
  *
  * ElizaOS plugin providing non-custodial wallet capabilities for AI agents.
- * Wraps agent-wallet-sdk to give any ElizaOS agent:
+ * Wraps agentwallet-sdk to give any ElizaOS agent:
  * - Multi-chain wallet creation and management (17 chains)
  * - x402 payment protocol support
  * - On-chain identity (ERC-8004 + ERC-6551)
@@ -116,7 +116,7 @@ const checkBalanceAction: Action = {
       // In production: const balance = await wallet.getBalance();
       if (callback) {
         await callback({
-          text: "Wallet balance retrieved. Use agent-wallet-sdk for live chain queries.",
+          text: "Wallet balance retrieved. Use agentwallet-sdk for live chain queries.",
         });
       }
     } catch (error) {
@@ -167,7 +167,7 @@ const sendPaymentAction: Action = {
       // In production: const tx = await wallet.x402Client.pay({ ... });
       if (callback) {
         await callback({
-          text: "Payment initiated. Use agent-wallet-sdk X402Client for live x402 payment flows.",
+          text: "Payment initiated. Use agentwallet-sdk X402Client for live x402 payment flows.",
         });
       }
     } catch (error) {
@@ -217,7 +217,7 @@ const getIdentityAction: Action = {
     try {
       if (callback) {
         await callback({
-          text: "Agent identity module ready. Use agent-wallet-sdk AgentIdentity for ERC-8004 binding.",
+          text: "Agent identity module ready. Use agentwallet-sdk AgentIdentity for ERC-8004 binding.",
         });
       }
     } catch (error) {

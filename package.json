@@ -24,6 +24,7 @@
   ],
   "author": "AI Agent Economy <bill@ai-agent-economy.com>",
   "license": "MIT",
+  "homepage": "https://www.npmjs.com/package/agentwallet-sdk",
   "repository": {
     "type": "git",
     "url": "https://github.com/up2itnow0822/plugin-agent-wallet"
