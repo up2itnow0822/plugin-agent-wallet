@@ -1,3 +1,6 @@
+> [!WARNING]
+> **Paused for security maintenance. Do not use in production.**
+
 # @ai-agent-economy/plugin-agent-wallet
 
 ElizaOS plugin providing non-custodial wallet capabilities for AI agents, powered by [agentwallet-sdk](https://www.npmjs.com/package/agentwallet-sdk).
